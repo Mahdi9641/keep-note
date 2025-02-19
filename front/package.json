@@ -1,0 +1,23 @@
+{
+  "name": "keepnote-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/icons-material": "^6.4.4",
+    "@mui/material": "^6.4.4",
+    "keycloak-js": "^25.0.6",
+    "next": "15.1.7",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^7.1.5",
+    "react-toastify": "^11.0.3"
+  }
+}
