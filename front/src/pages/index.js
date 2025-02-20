@@ -30,7 +30,7 @@ const Dashboard = () => {
     const { hour, minute, second } = getClockHands();
 
     return (
-        <Box sx={{ padding: 3, backgroundColor: '#f5f5f5', minHeight: '100vh' }}>
+        <Box sx={{ padding: 3, backgroundColor: '#dfe0e1', minHeight: '100vh' }}>
             <Container maxWidth="lg" sx={{ textAlign: 'center', paddingTop: 3 }}>
                 <Typography sx={{ color: '#4b73cc' }} variant="h4" gutterBottom fontWeight="bold">
                     Keep Notes Application
