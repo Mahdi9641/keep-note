@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { initKeycloak, keycloak } from '../config/keycloak';
+import {Box, CircularProgress, Typography} from "@mui/material";
 
 let logoutFunction = () => {};
 let currentUser = null; // متغیر خارجی برای ذخیره اطلاعات کاربر
@@ -17,6 +18,7 @@ export const KeycloakProvider = ({ children }) => {
     const [initialized, setInitialized] = useState(false);
     const [authenticated, setAuthenticated] = useState(false);
     const [user, setUser] = useState(null);
+
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -49,6 +51,25 @@ export const KeycloakProvider = ({ children }) => {
         await keycloak.logout();
         // window.location.href = "/login";
     };
+
+    if (!initialized) {
+        return (
+            <Box
+                sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    height: "100vh"
+                }}
+            >
+                <CircularProgress size={60} />
+                <Typography variant="h6" sx={{ mt: 2 }}>
+                    loading...
+                </Typography>
+            </Box>
+        );
+    }
 
     return (
         <KeycloakContext.Provider value={{ initialized, authenticated, user, logout: logoutFunction }}>
