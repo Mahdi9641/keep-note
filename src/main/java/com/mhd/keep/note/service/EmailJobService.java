@@ -1,7 +1,9 @@
 package com.mhd.keep.note.service;
 
 import com.mhd.keep.note.domain.Note;
+import com.mhd.keep.note.domain.Request;
 import com.mhd.keep.note.repo.NoteRepository;
+import com.mhd.keep.note.repo.RequestRepository;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import org.slf4j.Logger;
@@ -22,11 +24,13 @@ public class EmailJobService {
     private static final Logger logger = LoggerFactory.getLogger(EmailJobService.class);
 
     private final NoteRepository noteRepository;
+    private final RequestRepository requestRepository;
     private final JavaMailSender mailSender;
 
     @Autowired
-    public EmailJobService(NoteRepository noteRepository, JavaMailSender mailSender) {
+    public EmailJobService(NoteRepository noteRepository, RequestRepository requestRepository, JavaMailSender mailSender) {
         this.noteRepository = noteRepository;
+        this.requestRepository = requestRepository;
         this.mailSender = mailSender;
     }
 
@@ -35,19 +39,25 @@ public class EmailJobService {
         Date now = new Date();
         Date twentyMinutesLater = new Date(now.getTime() + 10 * 60 * 1000);
 
-        List<Note> notesToNotify = noteRepository.findByEmailSendFalseAndReminderBetween(now, twentyMinutesLater);
+        List<Note> notesToNotify = noteRepository.findByEmailSendFalseAndReadNotificationFalseAndReminderBetween(now, twentyMinutesLater);
         logger.info("Found {} notes for email reminders", notesToNotify.size());
 
         for (Note note : notesToNotify) {
             try {
-                sendEmail(note);
-                note.setEmailSend(true);
-                noteRepository.save(note);
+                List<Request> requests = requestRepository.findByUserIdAndProUserTrue(note.getUserId());
+
+                if (!requests.isEmpty()) {
+                    sendEmail(note);
+                    note.setEmailSend(true);
+                    noteRepository.save(note);
+                    logger.info("Email sent to userId {} for note id {}", note.getUserId(), note.getId());
+                }
             } catch (Exception e) {
                 logger.error("Failed to send email for note id {}: {}", note.getId(), e.getMessage());
             }
         }
     }
+
 
     private void sendEmail(Note note) {
         try {

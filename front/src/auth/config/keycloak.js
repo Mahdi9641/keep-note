@@ -3,8 +3,8 @@
 import Keycloak from 'keycloak-js';
 
 const keycloakConfig = {
-    url: 'http://172.31.13.30:6060', // URL Keycloak خود را جایگزین کنید
-    realm: 'fastApi', // Realm Keycloak خود را جایگزین کنید
+    url: 'https://keycloak.intelligentprotocols.com', // URL Keycloak خود را جایگزین کنید
+    realm: 'invoice', // Realm Keycloak خود را جایگزین کنید
     clientId: 'dashboard', // Client ID Keycloak خود را جایگزین کنید
 };
 
@@ -23,7 +23,7 @@ export const initKeycloak = () => {
         return keycloak
             .init({
                 onLoad: 'login-required',
-                redirectUri: 'http://172.31.13.30:3000/', // این URI باید با تنظیمات Keycloak مطابقت داشته باشد
+                redirectUri: window.location.ref ,
                 checkLoginIframe: false,
             })
             .then(authenticated => {

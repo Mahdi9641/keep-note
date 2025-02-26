@@ -39,7 +39,7 @@ export default function Notes() {
 
     const fetchNotes = async () => {
         const token = await getToken();
-        const res = await fetch('http://localhost:5000/api/notes', {
+        const res = await fetch('http://172.31.13.30:5000/api/notes', {
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${token}`,
@@ -65,7 +65,7 @@ export default function Notes() {
                 ...form,
                 reminder: form.reminder ? new Date(form.reminder).toISOString() : ''
             };
-            const res = await fetch('http://localhost:5000/api/notes', {
+            const res = await fetch('http://172.31.13.30:5000/api/notes', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -96,7 +96,7 @@ export default function Notes() {
 
     const deleteNote = async (id) => {
         const token = await getToken();
-        await fetch(`http://localhost:5000/api/notes/${id}`, {
+        await fetch(`http://172.31.13.30:5000/api/notes/${id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -116,7 +116,7 @@ export default function Notes() {
     const updateNote = async (updatedNote) => {
         updatedNote.reminder = updatedNote.reminder ? new Date(updatedNote.reminder).toISOString() : '';
         const token = await getToken();
-        await fetch(`http://localhost:5000/api/notes/${updatedNote.id}`, {
+        await fetch(`http://172.31.13.30:5000/api/notes/${updatedNote.id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -162,7 +162,6 @@ export default function Notes() {
             }}
             onClick={() => handleOpenModal(note)}
         >
-            {/* 2. اضافه کردن آیکون و تغییر رنگ آن بر اساس وضعیت پین */}
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
                 <Typography
                     variant="subtitle2"
@@ -429,6 +428,7 @@ export default function Notes() {
                                                 border: '1px solid #ccc',
                                                 '&.Mui-selected': {
                                                     border: '2px solid #000',
+                                                    backgroundColor: color,
                                                 },
                                             }}
                                         />
@@ -478,17 +478,17 @@ export default function Notes() {
                             />
                         </DialogContent>
                         <DialogActions>
-                            <Button
-                                onClick={() => {
-                                    toggleStatus(selectedNote, 'pinned');
-                                    handleCloseModal();
-                                }}
-                                size="small"
-                                variant="contained"
-                                sx={{backgroundColor: 'gray'}}
-                            >
-                                {selectedNote.pinned ? 'Unpin' : 'Pin'}
-                            </Button>
+                                {/*<Button*/}
+                                {/*    onClick={() => {*/}
+                                {/*        toggleStatus(selectedNote, 'pinned');*/}
+                                {/*        handleCloseModal();*/}
+                                {/*    }}*/}
+                                {/*    size="small"*/}
+                                {/*    variant="contained"*/}
+                                {/*    sx={{backgroundColor: 'gray'}}*/}
+                                {/*>*/}
+                                {/*    {selectedNote.pinned ? 'Unpin' : 'Pin'}*/}
+                                {/*</Button>*/}
                             <Button
                                 onClick={() => {
                                     toggleStatus(selectedNote, 'archived');

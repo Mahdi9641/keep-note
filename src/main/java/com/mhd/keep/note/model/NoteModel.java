@@ -13,8 +13,10 @@ public class NoteModel {
     private String userId;
     private String email;
     private boolean emailSend;
+    private boolean readNotification;
 
-    public NoteModel(Long id, String title, String content, String color, boolean pinned, boolean archived, String reminder, String userId, String email, boolean emailSend) {
+
+    public NoteModel(Long id, String title, String content, String color, boolean pinned, boolean archived, String reminder, String userId, String email, boolean emailSend, boolean readNotification) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -25,6 +27,15 @@ public class NoteModel {
         this.userId = userId;
         this.email = email;
         this.emailSend = emailSend;
+        this.readNotification = readNotification;
+    }
+
+    public boolean isReadNotification() {
+        return readNotification;
+    }
+
+    public void setReadNotification(boolean readNotification) {
+        this.readNotification = readNotification;
     }
 
     public NoteModel() {

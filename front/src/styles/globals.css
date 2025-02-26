@@ -40,3 +40,18 @@ a {
     color-scheme: dark;
   }
 }
+
+.rmdp-input {
+  font-size: 19px;
+  height: auto !important;
+  padding: 10px 5px;
+  background-color: floralwhite;
+}
+
+.rmdp-container {
+  width: 100%;
+  text-align: center;
+}
+.rmdp-container > div {
+  display: inline-block;
+}

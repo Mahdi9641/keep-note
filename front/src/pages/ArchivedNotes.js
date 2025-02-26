@@ -18,7 +18,7 @@ export default function ArchivedNotes() {
 
     const fetchNotes = async () => {
         const token = await getToken();
-        fetch('http://localhost:5000/api/notes/archived', {
+        fetch('http://172.31.13.30:5000/api/notes/archived', {
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${token}`,
@@ -41,7 +41,7 @@ export default function ArchivedNotes() {
     const unarchiveNote = async () => {
         const token = await getToken();
         const updatedNote = { ...selectedNote, archived: false };
-        await fetch(`http://localhost:5000/api/notes/${selectedNote.id}`, {
+        await fetch(`http://172.31.13.30:5000/api/notes/${selectedNote.id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -56,7 +56,7 @@ export default function ArchivedNotes() {
 
     const deleteNote = async () => {
         const token = await getToken();
-        await fetch(`http://localhost:5000/api/notes/${selectedNote.id}`, {
+        await fetch(`http://172.31.13.30:5000/api/notes/${selectedNote.id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -74,7 +74,7 @@ export default function ArchivedNotes() {
             ...selectedNote,
             reminder: selectedNote.reminder ? new Date(selectedNote.reminder).toISOString() : ''
         };
-        await fetch(`http://localhost:5000/api/notes/${selectedNote.id}`, {
+        await fetch(`http://172.31.13.30:5000/api/notes/${selectedNote.id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',

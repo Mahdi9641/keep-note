@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     AppBar,
     Box,
@@ -17,23 +17,42 @@ import MenuIcon from '@mui/icons-material/Menu';
 import DescriptionIcon from '@mui/icons-material/Description';
 import ArchiveIcon from '@mui/icons-material/Archive';
 import Link from 'next/link';
-import {Home, Logout} from '@mui/icons-material';
-import {getLogoutFunction} from "../auth/provider/KeycloakProvider";
+import { Home, Logout } from '@mui/icons-material';
+import { getCurrentUser, getLogoutFunction } from "../auth/provider/KeycloakProvider";
+import NotificationBell from "./NotificationBell";
 
 const menuItems = [
-    {text: 'Home', href: '/', icon: <Home/>},
-    {text: 'Notes', href: '/Notes', icon: <DescriptionIcon/>},
-    {text: 'ArchivedNotes', href: '/ArchivedNotes', icon: <ArchiveIcon/>},
+    { text: 'Home', href: '/', icon: <Home /> },
+    { text: 'Notes', href: '/Notes', icon: <DescriptionIcon /> },
+    { text: 'ArchivedNotes', href: '/ArchivedNotes', icon: <ArchiveIcon /> },
+    { text: 'EmailRequest', href: '/EmailRequest', icon: <ArchiveIcon /> },
+    { text: 'AdminApproval', href: '/AdminApproval', icon: <ArchiveIcon /> },
 ];
 
-const Layout = ({children}) => {
+const Layout = ({ children }) => {
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [pageName, setPageName] = useState('');
+    const [userRoles, setUserRoles] = useState([]);
     const logout = getLogoutFunction();
+    const user = getCurrentUser();
 
     const toggleDrawer = (open) => () => {
         setDrawerOpen(open);
     };
+
+    useEffect(() => {
+        if (user) {
+            console.log({user})
+            // Assuming user.roles is an array containing the user's roles
+            setUserRoles(user.role || []);
+        }
+    }, [user]);
+
+    const isAdmin = userRoles.includes('admin');
+
+    const filteredMenuItems = isAdmin
+        ? menuItems
+        : menuItems.filter(item => item.text !== 'AdminApproval');
 
     return (
         <>
@@ -48,15 +67,15 @@ const Layout = ({children}) => {
                     zIndex: 1300,
                 }}
             >
-                <Toolbar sx={{justifyContent: 'space-between'}}>
+                <Toolbar sx={{ justifyContent: 'space-between' }}>
                     <IconButton
                         edge="start"
                         color="inherit"
                         aria-label="open drawer"
                         onClick={toggleDrawer(true)}
-                        sx={{mr: 2}}
+                        sx={{ mr: 2 }}
                     >
-                        <MenuIcon fontSize="large"/>
+                        <MenuIcon fontSize="large" />
                     </IconButton>
                     <Typography
                         variant="h6"
@@ -66,7 +85,9 @@ const Layout = ({children}) => {
                         Keep Note / {pageName}
                     </Typography>
 
-                    <Logout onClick={async () => await logout()}/>
+                    <NotificationBell />
+
+                    <Logout onClick={async () => await logout()} />
                 </Toolbar>
             </AppBar>
 
@@ -75,7 +96,7 @@ const Layout = ({children}) => {
                 open={drawerOpen}
                 onClose={toggleDrawer(false)}
                 PaperProps={{
-                    sx: {mt: '64px', backgroundColor: '#f5f5f5'},
+                    sx: { mt: '64px', backgroundColor: '#f5f5f5' },
                 }}
             >
                 <Box
@@ -88,28 +109,27 @@ const Layout = ({children}) => {
                     onKeyDown={toggleDrawer(false)}
                 >
                     <List>
-                        {menuItems.map((item, index) => (
+                        {filteredMenuItems.map((item, index) => (
                             <React.Fragment key={item.text}>
                                 <Link
-                                    onClick={() => {
-                                        setPageName(item?.text);
-                                    }}
+                                    onClick={() => setPageName(item?.text)}
                                     href={item.href}
                                     passHref
                                 >
-                                    <ListItem button component="a">
+                                    <ListItem>
                                         <ListItemIcon>{item.icon}</ListItemIcon>
-                                        <ListItemText primary={item.text}/>
+                                        <ListItemText primary={item.text} />
                                     </ListItem>
                                 </Link>
-                                {index < menuItems.length - 1 && <Divider/>}
+
+                                {index < filteredMenuItems.length - 1 && <Divider />}
                             </React.Fragment>
                         ))}
                     </List>
                 </Box>
             </Drawer>
 
-            <Container sx={{mt: 8, textAlign: 'right'}}>
+            <Container sx={{ mt: 8, textAlign: 'right' }}>
                 <Box>{children}</Box>
             </Container>
         </>

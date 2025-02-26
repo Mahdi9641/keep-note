@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Container, Grid, Paper, Typography } from '@mui/material';
 import { Note, Archive, Email } from '@mui/icons-material';
+import { useRouter } from 'next/router';
 
 const Dashboard = () => {
     const [time, setTime] = useState(new Date());
+    const router = useRouter();
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -30,7 +32,7 @@ const Dashboard = () => {
     const { hour, minute, second } = getClockHands();
 
     return (
-        <Box sx={{ padding: 3, backgroundColor: '#dfe0e1', minHeight: '100vh' }}>
+        <Box sx={{ padding: 3, backgroundColor: '#dfe0e1', minHeight: 'calc(100vh - 64px)' }}>
             <Container maxWidth="lg" sx={{ textAlign: 'center', paddingTop: 3 }}>
                 <Typography sx={{ color: '#4b73cc' }} variant="h4" gutterBottom fontWeight="bold">
                     Keep Notes Application
@@ -79,7 +81,11 @@ const Dashboard = () => {
 
                 <Grid container spacing={3}>
                     <Grid item xs={12} sm={6} md={4}>
-                        <Paper elevation={3} sx={{ padding: 3, textAlign: 'center' }}>
+                        <Paper
+                            elevation={3}
+                            sx={{ padding: 3, textAlign: 'center', cursor: 'pointer' }}
+                            onClick={() => router.push('/Notes')}
+                        >
                             <Note sx={{ fontSize: 50, color: 'primary.main', marginBottom: 1 }} />
                             <Typography variant="h6" fontWeight="bold">Notes</Typography>
                             <Typography variant="body1">
@@ -88,7 +94,11 @@ const Dashboard = () => {
                         </Paper>
                     </Grid>
                     <Grid item xs={12} sm={6} md={4}>
-                        <Paper elevation={3} sx={{ padding: 3, textAlign: 'center' }}>
+                        <Paper
+                            elevation={3}
+                            sx={{ padding: 3, textAlign: 'center', cursor: 'pointer' }}
+                            onClick={() => router.push('/ArchivedNotes')}
+                        >
                             <Archive sx={{ fontSize: 50, color: 'secondary.main', marginBottom: 1 }} />
                             <Typography variant="h6" fontWeight="bold">Archive</Typography>
                             <Typography variant="body1">
@@ -97,7 +107,11 @@ const Dashboard = () => {
                         </Paper>
                     </Grid>
                     <Grid item xs={12} sm={6} md={4}>
-                        <Paper elevation={3} sx={{ padding: 3, textAlign: 'center' }}>
+                        <Paper
+                            elevation={3}
+                            sx={{ padding: 3, textAlign: 'center', cursor: 'pointer' }}
+                            onClick={() => router.push('/')}
+                        >
                             <Email sx={{ fontSize: 50, color: 'error.main', marginBottom: 1 }} />
                             <Typography variant="h6" fontWeight="bold">Gmail Reminders</Typography>
                             <Typography variant="body1">

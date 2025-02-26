@@ -27,11 +27,14 @@ export const KeycloakProvider = ({ children }) => {
                     setAuthenticated(auth);
                     if (keycloak && auth) {
                         const tokenParsed = keycloak.tokenParsed || {};
+                        console.log({tokenParsed})
                         const subPart = tokenParsed.sub.includes(':') ? tokenParsed.sub.split(':').pop() : tokenParsed.sub;
+                        const roles = tokenParsed?.resource_access?.['fastapi-app']?.roles?.includes('admin') ? 'admin' : null;
                         const userData = {
                             name: tokenParsed.preferred_username || 'Unknown User',
                             email: tokenParsed.email || 'No Email',
                             sub: subPart || 'No Sub',
+                            role:roles || 'No Role'
                         };
 
                         setUser(userData);
@@ -82,4 +85,4 @@ export const useKeycloak = () => useContext(KeycloakContext);
 
 // گرفتن تابع logout و اطلاعات کاربر به‌صورت مستقل
 export const getLogoutFunction = () => logoutFunction;
-export const getCurrentUser = () => currentUser;
+export const  getCurrentUser = () => currentUser;

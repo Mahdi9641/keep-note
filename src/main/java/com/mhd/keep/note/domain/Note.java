@@ -21,9 +21,18 @@ public class Note {
     private String userId;
     private String email;
     private boolean emailSend;
+    private boolean readNotification;
 
 
     public Note() {
+    }
+
+    public boolean isReadNotification() {
+        return readNotification;
+    }
+
+    public void setReadNotification(boolean readNotification) {
+        this.readNotification = readNotification;
     }
 
     public Long getId() {

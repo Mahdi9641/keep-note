@@ -9,7 +9,7 @@ function MyApp({Component, pageProps}) {
         <>
             <Head>
                 <title>Keep Note</title>
-                <link rel="icon" href="/file.svg"/>
+                <link rel="icon" href="/keep_2020q4_48dp.png"/>
             </Head>
             <KeycloakProvider>
                 <Navbar/>
