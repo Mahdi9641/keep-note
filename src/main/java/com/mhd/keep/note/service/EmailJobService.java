@@ -9,12 +9,14 @@ import jakarta.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.util.Date;
 import java.util.List;
 
@@ -62,7 +64,8 @@ public class EmailJobService {
     private void sendEmail(Note note) {
         try {
             MimeMessage mimeMessage = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "utf-8");
+
 
             helper.setTo(note.getEmail());
             helper.setSubject("Reminder: " + note.getTitle());
@@ -94,7 +97,20 @@ public class EmailJobService {
                     "Time Remaining: " + timeRemaining + "\n\n" +
                     "Please take necessary actions.\n\nBest regards,\nYour Keep Note Reminder Service";
 
-            helper.setText(emailText);
+            String htmlContent = "<html><body>" +
+                    "<h2 style='color: #3498db;'>📌 Reminder for Your Note</h2>" +
+                    "<p><b>Title:</b> " + note.getTitle() + "</p>" +
+                    "<p><b>Content:</b> " + note.getContent() + "</p>" +
+                    "<p>⏳ <b>Reminder Time:</b> " + reminderTime + "</p>" +
+                    "<p>⏳ <b>Time Remaining:</b> " + timeRemaining + "</p>" +
+                    "<hr>" +
+                    "<p><img src='cid:avatar' width='50' height='50' style='border-radius: 50%;' alt='Sender Avatar'/> " +
+                    "<b>Your Keep Note Reminder Service</b></p>" +
+                    "</body></html>";
+
+            helper.setText(htmlContent, true);
+            FileSystemResource avatar = new FileSystemResource(new File("src/main/resources/static/images/reminder.png"));
+            helper.addInline("avatar", avatar);
             mailSender.send(mimeMessage);
             logger.info("Sent email reminder to {} for note id {}", note.getEmail(), note.getId());
         } catch (Exception e) {

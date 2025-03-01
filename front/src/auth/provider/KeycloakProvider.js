@@ -5,7 +5,7 @@ import { initKeycloak, keycloak } from '../config/keycloak';
 import {Box, CircularProgress, Typography} from "@mui/material";
 
 let logoutFunction = () => {};
-let currentUser = null; // متغیر خارجی برای ذخیره اطلاعات کاربر
+let currentUser = null;
 
 const KeycloakContext = createContext({
     initialized: false,
@@ -38,7 +38,12 @@ export const KeycloakProvider = ({ children }) => {
                         };
 
                         setUser(userData);
-                        currentUser = userData; // مقداردهی متغیر خارجی
+                        currentUser = userData;
+                        const firstLogin = sessionStorage.getItem('firstLogin');
+                        if (!firstLogin) {
+                            sessionStorage.setItem('firstLogin', 'true');
+                            window.location.href = "/";
+                        }
                     }
                     setInitialized(true);
                 })
@@ -50,7 +55,7 @@ export const KeycloakProvider = ({ children }) => {
     }, []);
 
     logoutFunction = async () => {
-        console.log("hhhhhmhmhmhmhm")
+        sessionStorage.removeItem('firstLogin');
         await keycloak.logout();
         // window.location.href = "/login";
     };

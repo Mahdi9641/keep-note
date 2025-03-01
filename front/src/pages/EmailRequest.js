@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { Container, TextField, Button, Switch, FormControlLabel } from '@mui/material';
 import { MaterialReactTable } from 'material-react-table';
 import { getToken } from "../auth/config/keycloak";
+import {toast, ToastContainer} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function EmailRequest() {
     const [requests, setRequests] = useState([]);
@@ -41,6 +43,7 @@ export default function EmailRequest() {
                     Authorization: `Bearer ${token}`,
                 }
             });
+            toast.success('request Submit Successfully')
             fetchRequests();
         } catch (error) {
             console.error('Error submitting request:', error);
@@ -100,6 +103,7 @@ export default function EmailRequest() {
                     </div>
                 )}
             />
+            <ToastContainer autoClose={2000}/>
         </Container>
     );
 }

@@ -3,9 +3,9 @@
 import Keycloak from 'keycloak-js';
 
 const keycloakConfig = {
-    url: 'https://keycloak.intelligentprotocols.com', // URL Keycloak خود را جایگزین کنید
-    realm: 'invoice', // Realm Keycloak خود را جایگزین کنید
-    clientId: 'dashboard', // Client ID Keycloak خود را جایگزین کنید
+    url: 'http://localhost:6060',
+    realm: 'fastApi',
+    clientId: 'dashboard',
 };
 
 let keycloak;
@@ -57,13 +57,13 @@ export const getToken = async () => {
                 await keycloak.updateToken(30);
             } catch (error) {
                 console.error('Failed to refresh the token', error);
-                keycloak.logout(); // در صورت عدم موفقیت در بروزرسانی توکن، کاربر را خارج کنید
+                keycloak.logout();
                 return null;
             }
         }
-        return keycloak.token ?? null; // برگرداندن توکن
+        return keycloak.token ?? null;
     }
-    return null; // در صورت عدم وجود Keycloak
+    return null;
 };
 
 export { keycloak };

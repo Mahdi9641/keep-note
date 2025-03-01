@@ -26,6 +26,9 @@ const menuItems = [
     { text: 'Notes', href: '/Notes', icon: <DescriptionIcon /> },
     { text: 'ArchivedNotes', href: '/ArchivedNotes', icon: <ArchiveIcon /> },
     { text: 'EmailRequest', href: '/EmailRequest', icon: <ArchiveIcon /> },
+];
+
+const adminMenu = [
     { text: 'AdminApproval', href: '/AdminApproval', icon: <ArchiveIcon /> },
 ];
 
@@ -36,23 +39,18 @@ const Layout = ({ children }) => {
     const logout = getLogoutFunction();
     const user = getCurrentUser();
 
-    const toggleDrawer = (open) => () => {
-        setDrawerOpen(open);
+    const toggleDrawer = () => {
+        setDrawerOpen((prevState) => !prevState);
     };
 
     useEffect(() => {
         if (user) {
-            console.log({user})
-            // Assuming user.roles is an array containing the user's roles
+            console.log({ user });
             setUserRoles(user.role || []);
         }
     }, [user]);
 
     const isAdmin = userRoles.includes('admin');
-
-    const filteredMenuItems = isAdmin
-        ? menuItems
-        : menuItems.filter(item => item.text !== 'AdminApproval');
 
     return (
         <>
@@ -72,7 +70,7 @@ const Layout = ({ children }) => {
                         edge="start"
                         color="inherit"
                         aria-label="open drawer"
-                        onClick={toggleDrawer(true)}
+                        onClick={toggleDrawer}
                         sx={{ mr: 2 }}
                     >
                         <MenuIcon fontSize="large" />
@@ -94,40 +92,63 @@ const Layout = ({ children }) => {
             <Drawer
                 anchor="left"
                 open={drawerOpen}
-                onClose={toggleDrawer(false)}
+                onClose={toggleDrawer}
                 PaperProps={{
-                    sx: { mt: '64px', backgroundColor: '#f5f5f5' },
+                    sx: {
+                        mt: '55px',
+                        backgroundColor: '#fff',
+                        boxShadow: '10px 0 15px rgba(0, 0, 0, 0.2)',
+                        transition: 'all 0.3s ease',
+                    },
                 }}
             >
                 <Box
                     sx={{
                         width: 250,
                         transition: 'all 0.3s ease-in-out',
+                        backgroundColor: '#f5f5f5',
+                        borderRadius: '8px 0 0 8px',
                     }}
                     role="presentation"
-                    onClick={toggleDrawer(false)}
-                    onKeyDown={toggleDrawer(false)}
+                    onClick={toggleDrawer}
+                    onKeyDown={toggleDrawer}
                 >
                     <List>
-                        {filteredMenuItems.map((item, index) => (
-                            <React.Fragment key={item.text}>
-                                <Link
-                                    onClick={() => setPageName(item?.text)}
-                                    href={item.href}
-                                    passHref
-                                >
-                                    <ListItem>
-                                        <ListItemIcon>{item.icon}</ListItemIcon>
-                                        <ListItemText primary={item.text} />
-                                    </ListItem>
-                                </Link>
-
-                                {index < filteredMenuItems.length - 1 && <Divider />}
-                            </React.Fragment>
-                        ))}
+                        {isAdmin
+                            ? adminMenu.map((item) => (
+                                <React.Fragment key={item.text}>
+                                    <Link onClick={() => setPageName(item?.text)} href={item.href} passHref>
+                                        <ListItem sx={{
+                                            '&:hover': {
+                                                backgroundColor: '#e0e0e0',
+                                                cursor: 'pointer',
+                                            },
+                                        }}>
+                                            <ListItemIcon>{item.icon}</ListItemIcon>
+                                            <ListItemText primary={item.text} />
+                                        </ListItem>
+                                    </Link>
+                                </React.Fragment>
+                            ))
+                            : menuItems.map((item) => (
+                                <React.Fragment key={item.text}>
+                                    <Link onClick={() => setPageName(item?.text)} href={item.href} passHref>
+                                        <ListItem sx={{
+                                            '&:hover': {
+                                                backgroundColor: '#e0e0e0',
+                                                cursor: 'pointer',
+                                            },
+                                        }}>
+                                            <ListItemIcon>{item.icon}</ListItemIcon>
+                                            <ListItemText primary={item.text} />
+                                        </ListItem>
+                                    </Link>
+                                </React.Fragment>
+                            ))}
                     </List>
                 </Box>
             </Drawer>
+
 
             <Container sx={{ mt: 8, textAlign: 'right' }}>
                 <Box>{children}</Box>

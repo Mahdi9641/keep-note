@@ -76,7 +76,7 @@ export default function NotificationBell() {
         if (Notification.permission === "granted") {
             new Notification("Keep Note", {
                 body: `${note.title}\n${note.content}`,
-                icon: "/keep_2020q4_48dp.png",
+                icon: "/reminder.png",
                 tag: note.id,
                 silent: false,
             });

@@ -2,11 +2,12 @@ import { useState, useEffect } from 'react';
 import { Container, Button } from '@mui/material';
 import { MaterialReactTable } from 'material-react-table';
 import {getToken} from "../auth/config/keycloak";
+import {toast, ToastContainer} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function AdminApproval() {
     const [requests, setRequests] = useState([]);
 
-    // تابع برای گرفتن درخواست‌هایی که proUser برابر false دارند
     useEffect(() => {
         fetchRequests();
     }, []);
@@ -28,7 +29,7 @@ export default function AdminApproval() {
         }
     };
 
-    // تابع برای تایید تغییر proUser به true
+
     const handleVerify = async (id) => {
         try {
             const token = await getToken();
@@ -39,7 +40,7 @@ export default function AdminApproval() {
                     Authorization: `Bearer ${token}`,
                 }
             });
-            // پس از تایید تغییرات، درخواست‌ها را دوباره بارگذاری می‌کنیم
+            toast.success('Verify user successfully');
             fetchRequests();
         } catch (error) {
             console.error('Error updating user:', error);
@@ -86,6 +87,7 @@ export default function AdminApproval() {
             <h2 style={{ marginTop: '60px' , marginBottom:'50px'}}>Admin Approval</h2>
 
             <MaterialReactTable columns={columns} data={requests} />
+            <ToastContainer autoClose={2000}/>
         </Container>
     );
 }
