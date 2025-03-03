@@ -57,35 +57,72 @@ const Layout = ({ children }) => {
             <AppBar
                 position="fixed"
                 sx={{
-                    backgroundColor: '#8b8a80',
-                    boxShadow: 3,
+                    background: 'linear-gradient(135deg, #2c3e50 0%, #3498db 100%)',
+                    boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
                     width: '100%',
                     top: 0,
                     left: 0,
                     zIndex: 1300,
                 }}
             >
-                <Toolbar sx={{ justifyContent: 'space-between' }}>
+                <Toolbar sx={{
+                    justifyContent: 'space-between',
+                    height: '64px',
+                    padding: '0 20px'
+                }}>
                     <IconButton
                         edge="start"
                         color="inherit"
                         aria-label="open drawer"
                         onClick={toggleDrawer}
-                        sx={{ mr: 2 }}
+                        sx={{
+                            mr: 2,
+                            '&:hover': {
+                                backgroundColor: 'rgba(255,255,255,0.1)',
+                            }
+                        }}
                     >
                         <MenuIcon fontSize="large" />
                     </IconButton>
                     <Typography
                         variant="h6"
-                        sx={{ flexGrow: 1, textAlign: 'left', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: 1 }}
+                        sx={{
+                            flexGrow: 1,
+                            textAlign: 'left',
+                            fontWeight: 'bold',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 2,
+                            color: '#ffffff',
+                            textShadow: '0 1px 2px rgba(0,0,0,0.1)'
+                        }}
                     >
-                        <img src="/keep_2020q4_48dp.png" alt="logo" style={{ width: 32, height: 32 }} />
+                        <img
+                            src="/keep_2020q4_48dp.png"
+                            alt="logo"
+                            style={{
+                                width: 32,
+                                height: 32,
+                                filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))'
+                            }}
+                        />
                         Keep Note / {pageName}
                     </Typography>
 
-                    <NotificationBell />
-
-                    <Logout onClick={async () => await logout()} />
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <NotificationBell />
+                        <IconButton
+                            onClick={async () => await logout()}
+                            sx={{
+                                color: '#ffffff',
+                                '&:hover': {
+                                    backgroundColor: 'rgba(255,255,255,0.1)',
+                                }
+                            }}
+                        >
+                            <Logout />
+                        </IconButton>
+                    </Box>
                 </Toolbar>
             </AppBar>
 
@@ -95,19 +132,18 @@ const Layout = ({ children }) => {
                 onClose={toggleDrawer}
                 PaperProps={{
                     sx: {
-                        mt: '55px',
-                        backgroundColor: '#fff',
-                        boxShadow: '10px 0 15px rgba(0, 0, 0, 0.2)',
-                        transition: 'all 0.3s ease',
+                        mt: '64px',
+                        backgroundColor: '#ffffff',
+                        boxShadow: '4px 0 10px rgba(0,0,0,0.1)',
+                        width: 250,
                     },
                 }}
             >
                 <Box
                     sx={{
                         width: 250,
-                        transition: 'all 0.3s ease-in-out',
-                        backgroundColor: '#f5f5f5',
-                        borderRadius: '8px 0 0 8px',
+                        backgroundColor: '#ffffff',
+                        height: '100%',
                     }}
                     role="presentation"
                     onClick={toggleDrawer}
@@ -119,38 +155,67 @@ const Layout = ({ children }) => {
                                 <React.Fragment key={item.text}>
                                     <Link onClick={() => setPageName(item?.text)} href={item.href} passHref>
                                         <ListItem sx={{
+                                            padding: '12px 24px',
+                                            transition: 'all 0.2s ease',
                                             '&:hover': {
-                                                backgroundColor: '#e0e0e0',
+                                                backgroundColor: '#f5f5f5',
                                                 cursor: 'pointer',
+                                                transform: 'translateX(5px)',
                                             },
                                         }}>
-                                            <ListItemIcon>{item.icon}</ListItemIcon>
-                                            <ListItemText primary={item.text} />
+                                            <ListItemIcon sx={{
+                                                color: '#2c3e50',
+                                                minWidth: '40px'
+                                            }}>
+                                                {item.icon}
+                                            </ListItemIcon>
+                                            <ListItemText
+                                                primary={item.text}
+                                                sx={{
+                                                    '& .MuiTypography-root': {
+                                                        fontWeight: 500,
+                                                        color: '#2c3e50'
+                                                    }
+                                                }}
+                                            />
                                         </ListItem>
                                     </Link>
+                                    <Divider sx={{ margin: '4px 0' }} />
                                 </React.Fragment>
                             ))
                             : menuItems.map((item) => (
                                 <React.Fragment key={item.text}>
-                                    <Link onClick={() => setPageName(item?.text)} href={item.href} passHref>
-                                        <ListItem sx={{
-                                            '&:hover': {
-                                                backgroundColor: '#e0e0e0',
-                                                cursor: 'pointer',
-                                            },
-                                        }}>
-                                            <ListItemIcon>{item.icon}</ListItemIcon>
+                                    <Link href={item.href} passHref>
+                                        <ListItem
+                                            onClick={() => setPageName(item.text)}  // اینجا تغییر کرد
+                                            sx={{
+                                                padding: '12px 24px',
+                                                transition: 'all 0.2s ease',
+                                                '&:hover': {
+                                                    backgroundColor: '#f5f5f5',
+                                                    cursor: 'pointer',
+                                                    transform: 'translateX(5px)',
+                                                },
+                                            }}
+                                        >
+                                            <ListItemIcon sx={{ color: '#2c3e50', minWidth: '40px' }}>
+                                                {item.icon}
+                                            </ListItemIcon>
                                             <ListItemText primary={item.text} />
                                         </ListItem>
                                     </Link>
+                                    <Divider sx={{ margin: '4px 0' }} />
                                 </React.Fragment>
                             ))}
                     </List>
                 </Box>
             </Drawer>
 
-
-            <Container sx={{ mt: 8, textAlign: 'right' }}>
+            <Container sx={{
+                mt: 8,
+                textAlign: 'right',
+                // padding: '24px'
+            }}>
                 <Box>{children}</Box>
             </Container>
         </>

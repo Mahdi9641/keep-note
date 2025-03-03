@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Box,
     Button,
@@ -12,13 +12,17 @@ import {
     TextField,
     ToggleButton,
     ToggleButtonGroup,
-    Typography
+    Typography,
+    IconButton,
+    Fade,
 } from '@mui/material';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import {toast, ToastContainer} from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import {getToken} from "../auth/config/keycloak";
+import { getToken } from "../auth/config/keycloak";
 import PushPinIcon from '@mui/icons-material/PushPin';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { motion } from 'framer-motion';
 
 export default function Notes() {
     const [notes, setNotes] = useState([]);
@@ -50,7 +54,7 @@ export default function Notes() {
     };
 
     const handleChange = (e) => {
-        const {name, value, type, checked} = e.target;
+        const { name, value, type, checked } = e.target;
         setForm({
             ...form,
             [name]: type === 'checkbox' ? checked : value,
@@ -86,47 +90,73 @@ export default function Notes() {
                 archived: false,
                 reminder: '',
             });
-            toast.success('note created successfully');
+            toast.success('Note created successfully', {
+                position: "top-right",
+                theme: "colored"
+            });
             fetchNotes();
         } catch (error) {
             console.error('Error adding note:', error);
-            alert('Failed to add note. Please try again.');
+            toast.error('Failed to add note', {
+                position: "top-right",
+                theme: "colored"
+            });
         }
     };
 
     const deleteNote = async (id) => {
-        const token = await getToken();
-        await fetch(`http://172.31.13.30:5000/api/notes/${id}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`,
-            },
-        });
-        setNotes(notes.filter((note) => note.id !== id));
-        toast.warning('note delete successfully');
-        fetchNotes();
+        try {
+            const token = await getToken();
+            await fetch(`http://172.31.13.30:5000/api/notes/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            setNotes(notes.filter((note) => note.id !== id));
+            toast.warning('Note deleted successfully', {
+                position: "top-right",
+                theme: "colored"
+            });
+            fetchNotes();
+        } catch (error) {
+            toast.error('Failed to delete note', {
+                position: "top-right",
+                theme: "colored"
+            });
+        }
     };
 
     const toggleStatus = async (note, field) => {
-        const updatedNote = {...note, [field]: !note[field]};
+        const updatedNote = { ...note, [field]: !note[field] };
         updateNote(updatedNote);
     };
 
     const updateNote = async (updatedNote) => {
-        updatedNote.reminder = updatedNote.reminder ? new Date(updatedNote.reminder).toISOString() : '';
-        const token = await getToken();
-        await fetch(`http://172.31.13.30:5000/api/notes/${updatedNote.id}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify(updatedNote),
-        });
-        setNotes(notes.map((n) => (n.id === updatedNote.id ? updatedNote : n)));
-        toast.success('note update successfully');
-        fetchNotes();
+        try {
+            updatedNote.reminder = updatedNote.reminder ? new Date(updatedNote.reminder).toISOString() : '';
+            const token = await getToken();
+            await fetch(`http://172.31.13.30:5000/api/notes/${updatedNote.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(updatedNote),
+            });
+            setNotes(notes.map((n) => (n.id === updatedNote.id ? updatedNote : n)));
+            toast.success('Note updated successfully', {
+                position: "top-right",
+                theme: "colored"
+            });
+            fetchNotes();
+        } catch (error) {
+            toast.error('Failed to update note', {
+                position: "top-right",
+                theme: "colored"
+            });
+        }
     };
 
     const pinnedNotes = notes.filter(note => note.pinned && !note.archived);
@@ -141,120 +171,175 @@ export default function Notes() {
     };
 
     const NoteBox = ({ note }) => (
-        <Paper
-            sx={{
-                backgroundColor: note.color,
-                p: 1,
-                borderRadius: 4,
-                boxShadow: '0px 1px 4px rgba(60,64,67,0.3)',
-                cursor: 'pointer',
-                width: 130,
-                height: 100,
-                minWidth: 100,
-                minHeight: 100,
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                textAlign: 'center',
-                overflow: 'hidden',
-                flexShrink: 0
-            }}
-            onClick={() => handleOpenModal(note)}
+        <motion.div
+            initial={{ opacity: 1, y: 20 }}
+            animate={{ opacity: 1, y: 20 }}
+            transition={{ duration: 0.3 }}
         >
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+            <Paper
+                elevation={3}
+                sx={{
+                    backgroundColor: note.color,
+                    p: 2,
+                    borderRadius: 2,
+                    boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+                    cursor: 'pointer',
+                    minWidth: 200,
+                    minHeight: 150,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    position: 'relative',
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                        transform: 'translateY(-4px)',
+                        boxShadow: '0 6px 12px rgba(0,0,0,0.15)',
+                    }
+                }}
+                onClick={() => handleOpenModal(note)}
+            >
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+                    <Typography
+                        variant="h6"
+                        sx={{
+                            fontWeight: 600,
+                            fontSize: '1.1rem',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                            maxWidth: '80%'
+                        }}
+                    >
+                        {note.title}
+                    </Typography>
+                    <IconButton
+                        size="small"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            toggleStatus(note, 'pinned');
+                        }}
+                        sx={{
+                            color: note.pinned ? 'primary.main' : 'text.secondary',
+                            '&:hover': { color: 'primary.main' }
+                        }}
+                    >
+                        <PushPinIcon fontSize="small" />
+                    </IconButton>
+                </Box>
+
                 <Typography
-                    variant="subtitle2"
+                    variant="body2"
                     sx={{
-                        fontWeight: 'bold',
-                        mb: 0.3,
-                        whiteSpace: 'nowrap',
+                        flexGrow: 1,
                         overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        width: '80%'
+                        display: '-webkit-box',
+                        WebkitLineClamp: 3,
+                        WebkitBoxOrient: 'vertical',
+                        mb: 2
                     }}
                 >
-                    {note.title}
+                    {note.content}
                 </Typography>
-                <PushPinIcon
-                    sx={{ color: note.pinned ? '#000000' : '#757575', cursor: 'pointer' }}
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        toggleStatus(note, 'pinned');
-                    }}
-                />
-            </Box>
-            <Typography
-                variant="body2"
-                noWrap
-                sx={{
-                    flexGrow: 1,
-                    fontSize: '0.7rem',
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    width: '100%'
-                }}
-            >
-                {note.content}
-            </Typography>
-            {note.reminder ? (
-                <Box sx={{ display: 'flex', alignItems: 'center', mt: 0.3, color: '#757575' }}>
-                    <AccessTimeIcon sx={{ fontSize: 12, mr: 0.3 }} />
-                    <Typography variant="caption">
-                        {note.reminder.substring(0, 19)}
-                    </Typography>
-                </Box>
-            ) : (
-                <Typography variant="caption" sx={{ mt: 0.3, color: '#757575' }}>
-                    <AccessTimeIcon sx={{ fontSize: 12, mr: 0.3 }} />
-                    <Typography variant="caption">
-                        no reminder
-                    </Typography>
-                </Typography>
-            )}
-        </Paper>
-    );
-    return (
-        <Box sx={{padding: 2, backgroundColor: '#dfe0e1', minHeight: 'calc(100vh - 64px)'}}>
-            <div>
-                <Typography variant="h6" sx={{marginBottom: 3, color: '#000000'}}>My Notes</Typography>
-            </div>
-            <Paper
-                sx={{
-                    p: 2,
-                    mb: 2,
-                    backgroundColor: '#ebe6e691',
-                    borderRadius: 1,
-                    boxShadow: '0px 1px 3px rgba(60,64,67,0.3)',
-                    maxWidth: 400,
-                    margin: '0 auto'
-                }}
-            >
-                <Box sx={{textAlign: 'center', mb: 1}}>
-                    <TextField
-                        label="Title"
-                        name="title"
-                        variant="outlined"
+
+                <Box sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    mt: 'auto'
+                }}>
+                    {note.reminder && (
+                        <Box sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            color: 'text.secondary',
+                            fontSize: '0.75rem'
+                        }}>
+                            <AccessTimeIcon sx={{ fontSize: 16, mr: 0.5 }} />
+                            {new Date(note.reminder).toLocaleString()}
+                        </Box>
+                    )}
+                    <IconButton
                         size="small"
-                        value={form.title}
-                        onChange={handleChange}
-                        sx={{width: '80%', mb: 1}}
-                    />
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            deleteNote(note.id);
+                        }}
+                        sx={{
+                            color: 'error.main',
+                            opacity: 0.7,
+                            '&:hover': {
+                                opacity: 1,
+                                backgroundColor: 'error.light'
+                            }
+                        }}
+                    >
+                        <DeleteIcon fontSize="small" />
+                    </IconButton>
                 </Box>
+            </Paper>
+        </motion.div>
+    );
+
+    return (
+        <Box sx={{
+            padding: 3,
+            backgroundColor: '#f5f5f5',
+            minHeight: 'calc(100vh - 64px)',
+            background: 'linear-gradient(145deg, #f6f7f9, #ffffff)'
+        }}>
+            <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+            >
+                <Typography
+                    variant="h4"
+                    sx={{
+                        mb: 4,
+                        color: '#2c3e50',
+                        fontWeight: 700,
+                        textAlign: 'center',
+                        textShadow: '2px 2px 4px rgba(0,0,0,0.1)'
+                    }}
+                >
+                    My Notes
+                </Typography>
+            </motion.div>
+
+            <Paper
+                elevation={4}
+                sx={{
+                    p: 3,
+                    mb: 4,
+                    maxWidth: 600,
+                    margin: '0 auto',
+                    borderRadius: 2,
+                    backgroundColor: 'rgba(255,255,255,0.9)',
+                    backdropFilter: 'blur(10px)',
+                    boxShadow: '0 8px 32px rgba(0,0,0,0.1)'
+                }}
+            >
+                <TextField
+                    label="Title"
+                    name="title"
+                    variant="outlined"
+                    fullWidth
+                    value={form.title}
+                    onChange={handleChange}
+                    sx={{ mb: 2 }}
+                />
                 <TextField
                     label="Content"
                     name="content"
                     variant="outlined"
                     fullWidth
                     multiline
-                    rows={2}
+                    rows={3}
                     value={form.content}
                     onChange={handleChange}
-                    sx={{mb: 1}}
+                    sx={{ mb: 2 }}
                 />
-                <Box sx={{display: 'flex', alignItems: 'center', mb: 1}}>
-                    <Typography variant="body2" sx={{mr: 1}}>
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, gap: 2 }}>
+                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                         Color:
                     </Typography>
                     <ToggleButtonGroup
@@ -262,41 +347,41 @@ export default function Notes() {
                         exclusive
                         onChange={(event, newColor) => {
                             if (newColor !== null) {
-                                setForm({...form, color: newColor});
+                                setForm({ ...form, color: newColor });
                             }
                         }}
-                        aria-label="choose note color"
+                        sx={{ flexWrap: 'wrap' }}
                     >
                         {colorOptions.map((color) => (
                             <ToggleButton
                                 key={color}
                                 value={color}
-                                aria-label={color}
                                 sx={{
+                                    width: 32,
+                                    height: 32,
+                                    m: 0.5,
                                     backgroundColor: color,
-                                    minWidth: '32px',
-                                    minHeight: '32px',
-                                    border: '1px solid #ccc',
+                                    border: form.color === color ? '2px solid #000' : '1px solid #ccc',
                                     '&.Mui-selected': {
-                                        border: '2px solid #000',
                                         backgroundColor: color,
+                                        transform: 'scale(1.1)',
                                     },
                                 }}
                             />
                         ))}
                     </ToggleButtonGroup>
                 </Box>
-                <Box sx={{display: 'flex', alignItems: 'center', gap: 1, mb: 1}}>
+                <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
                     <FormControlLabel
                         control={
                             <Checkbox
                                 checked={form.pinned}
                                 onChange={handleChange}
                                 name="pinned"
+                                color="primary"
                             />
                         }
-                        label="Pin"
-                        sx={{m: 0}}
+                        label="Pin Note"
                     />
                     <FormControlLabel
                         control={
@@ -304,10 +389,10 @@ export default function Notes() {
                                 checked={form.archived}
                                 onChange={handleChange}
                                 name="archived"
+                                color="secondary"
                             />
                         }
                         label="Archive"
-                        sx={{m: 0}}
                     />
                 </Box>
                 <TextField
@@ -318,92 +403,143 @@ export default function Notes() {
                     fullWidth
                     value={form.reminder}
                     onChange={handleChange}
-                    InputLabelProps={{shrink: true}}
-                    sx={{mb: 1}}
+                    InputLabelProps={{ shrink: true }}
+                    sx={{ mb: 2 }}
                 />
-                <Box sx={{textAlign: 'center'}}>
-                    <Button sx={{backgroundColor: "gray"}} variant="contained" onClick={addNote} size="small">
-                        Add Note
-                    </Button>
-                </Box>
+                <Button
+                    variant="contained"
+                    onClick={addNote}
+                    fullWidth
+                    sx={{
+                        backgroundColor: '#4CAF50',
+                        '&:hover': {
+                            backgroundColor: '#45a049'
+                        }
+                    }}
+                >
+                    Add Note
+                </Button>
             </Paper>
-            <Box>
-                {notes.length === 0 ? (
-                    <Box
-                        sx={{
-                            paddingTop: '20px',
-                            color: '#000',
-                            textAlign: 'center',
-                            mt: 2,
-                            borderRadius: '16px',
-                            border: '1px solid #ccc',
-                            p: 2,
-                            maxWidth: '400px',
-                            mx: 'auto'
-                        }}
-                    >
-                        <Typography variant="body1">
-                            You don't have any notes. Start by writing a note.
-                        </Typography>
-                    </Box>
 
+            <Box sx={{ maxWidth: 1200, margin: '0 auto' }}>
+                {notes.length === 0 ? (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.5 }}
+                    >
+                        <Paper
+                            sx={{
+                                p: 4,
+                                textAlign: 'center',
+                                borderRadius: 2,
+                                backgroundColor: 'rgba(255,255,255,0.9)',
+                            }}
+                        >
+                            <Typography variant="h6" color="text.secondary">
+                                No notes yet. Start by creating one!
+                            </Typography>
+                        </Paper>
+                    </motion.div>
                 ) : (
                     <>
                         {pinnedNotes.length > 0 && (
-                            <>
-                                <Typography variant="h6" sx={{color: "#5f6368", mb: 1}}>
+                            <Box sx={{ mb: 4 }}>
+                                <Typography
+                                    variant="h6"
+                                    sx={{
+                                        color: 'text.secondary',
+                                        mb: 2,
+                                        fontWeight: 600
+                                    }}
+                                >
                                     Pinned Notes
                                 </Typography>
-                                <Box display="flex" flexWrap="wrap" gap={0.5}>
+                                <Box
+                                    sx={{
+                                        display: 'grid',
+                                        gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
+                                        gap: 3
+                                    }}
+                                >
                                     {pinnedNotes.map((note) => (
-                                        <NoteBox key={note.id} note={note}/>
+                                        <NoteBox key={note.id} note={note} />
                                     ))}
                                 </Box>
-                            </>
+                            </Box>
                         )}
+
                         {otherNotes.length > 0 && (
-                            <>
-                                <Typography variant="h6" sx={{color: "#5f6368", mt: 2, mb: 1}}>
-                                    Others
+                            <Box>
+                                <Typography
+                                    variant="h6"
+                                    sx={{
+                                        color: 'text.secondary',
+                                        mb: 2,
+                                        fontWeight: 600
+                                    }}
+                                >
+                                    Other Notes
                                 </Typography>
-                                <Box display="flex" flexWrap="wrap" gap={0.5}>
+                                <Box
+                                    sx={{
+                                        display: 'grid',
+                                        gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
+                                        gap: 3
+                                    }}
+                                >
                                     {otherNotes.map((note) => (
-                                        <NoteBox key={note.id} note={note}/>
+                                        <NoteBox key={note.id} note={note} />
                                     ))}
                                 </Box>
-                            </>
+                            </Box>
                         )}
                     </>
                 )}
             </Box>
-            {selectedNote && (
-                <Dialog open={true} onClose={handleCloseModal} fullWidth maxWidth="sm">
-                    <div style={{backgroundColor: '#efeeed'}}>
-                        <DialogTitle>Edit Note</DialogTitle>
+
+            <Dialog
+                open={!!selectedNote}
+                onClose={handleCloseModal}
+                fullWidth
+                maxWidth="sm"
+                TransitionComponent={Fade}
+                transitionDuration={300}
+            >
+                {selectedNote && (
+                    <Box sx={{ backgroundColor: selectedNote.color }}>
+                        <DialogTitle sx={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center'
+                        }}>
+                            Edit Note
+                            <IconButton
+                                onClick={() => toggleStatus(selectedNote, 'pinned')}
+                                color={selectedNote.pinned ? "primary" : "default"}
+                            >
+                                <PushPinIcon />
+                            </IconButton>
+                        </DialogTitle>
                         <DialogContent dividers>
                             <TextField
                                 label="Title"
-                                name="title"
-                                variant="outlined"
                                 fullWidth
-                                size="small"
                                 value={selectedNote.title}
                                 onChange={(e) => setSelectedNote({...selectedNote, title: e.target.value})}
-                                sx={{mb: 1}}
+                                sx={{ mb: 2 }}
                             />
                             <TextField
                                 label="Content"
-                                name="content"
-                                variant="outlined"
                                 fullWidth
                                 multiline
                                 rows={4}
                                 value={selectedNote.content}
                                 onChange={(e) => setSelectedNote({...selectedNote, content: e.target.value})}
-                                sx={{mb: 1}}
+                                sx={{ mb: 2 }}
                             />
-                            <Box sx={{display: 'flex', alignItems: 'center', mb: 1}}>
-                                <Typography variant="body2" sx={{mr: 1}}>
+                            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                                <Typography variant="body2" sx={{ mr: 2 }}>
                                     Color:
                                 </Typography>
                                 <ToggleButtonGroup
@@ -414,42 +550,23 @@ export default function Notes() {
                                             setSelectedNote({...selectedNote, color: newColor});
                                         }
                                     }}
-                                    aria-label="choose note color"
                                 >
                                     {colorOptions.map((color) => (
                                         <ToggleButton
                                             key={color}
                                             value={color}
-                                            aria-label={color}
                                             sx={{
+                                                width: 32,
+                                                height: 32,
+                                                m: 0.5,
                                                 backgroundColor: color,
-                                                minWidth: '32px',
-                                                minHeight: '32px',
-                                                border: '1px solid #ccc',
-                                                '&.Mui-selected': {
-                                                    border: '2px solid #000',
-                                                    backgroundColor: color,
-                                                },
+                                                border: selectedNote.color === color ? '2px solid #000' : '1px solid #ccc',
                                             }}
                                         />
                                     ))}
                                 </ToggleButtonGroup>
                             </Box>
-                            <Box sx={{display: 'flex', alignItems: 'center', gap: 1, mb: 1}}>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={selectedNote.pinned}
-                                            onChange={() => setSelectedNote({
-                                                ...selectedNote,
-                                                pinned: !selectedNote.pinned
-                                            })}
-                                            name="pinned"
-                                        />
-                                    }
-                                    label="Pin"
-                                    sx={{m: 0}}
-                                />
+                            <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
                                 <FormControlLabel
                                     control={
                                         <Checkbox
@@ -458,79 +575,50 @@ export default function Notes() {
                                                 ...selectedNote,
                                                 archived: !selectedNote.archived
                                             })}
-                                            name="archived"
                                         />
                                     }
                                     label="Archive"
-                                    sx={{m: 0}}
                                 />
                             </Box>
                             <TextField
                                 label="Reminder"
-                                name="reminder"
                                 type="datetime-local"
-                                variant="outlined"
                                 fullWidth
                                 value={selectedNote.reminder ? selectedNote.reminder.substring(0, 16) : ''}
                                 onChange={(e) => setSelectedNote({...selectedNote, reminder: e.target.value})}
-                                InputLabelProps={{shrink: true}}
-                                sx={{mb: 1}}
+                                InputLabelProps={{ shrink: true }}
                             />
                         </DialogContent>
-                        <DialogActions>
-                                {/*<Button*/}
-                                {/*    onClick={() => {*/}
-                                {/*        toggleStatus(selectedNote, 'pinned');*/}
-                                {/*        handleCloseModal();*/}
-                                {/*    }}*/}
-                                {/*    size="small"*/}
-                                {/*    variant="contained"*/}
-                                {/*    sx={{backgroundColor: 'gray'}}*/}
-                                {/*>*/}
-                                {/*    {selectedNote.pinned ? 'Unpin' : 'Pin'}*/}
-                                {/*</Button>*/}
+                        <DialogActions sx={{ p: 2, gap: 1 }}>
                             <Button
                                 onClick={() => {
-                                    toggleStatus(selectedNote, 'archived');
+                                    deleteNote(selectedNote.id);
                                     handleCloseModal();
                                 }}
+                                color="error"
                                 variant="contained"
-                                sx={{backgroundColor: 'gray'}}
-                                size="small"
+                                startIcon={<DeleteIcon />}
                             >
-                                {selectedNote.archived ? 'Unarchive' : 'Archive'}
+                                Delete
                             </Button>
                             <Button
-                                onClick={async () => {
-                                    await updateNote(selectedNote);
+                                onClick={() => {
+                                    updateNote(selectedNote);
                                     handleCloseModal();
                                 }}
-                                size="small"
+                                color="primary"
                                 variant="contained"
-                                sx={{backgroundColor: 'gray'}}
                             >
                                 Save Changes
                             </Button>
-                            <Button
-                                onClick={async () => {
-                                    await deleteNote(selectedNote.id);
-                                    handleCloseModal();
-                                }}
-                                size="small"
-                                color="error"
-                                variant="contained"
-                            >
-                                delete
-                            </Button>
-                            <Button onClick={handleCloseModal} variant="contained" size="small"
-                                    sx={{backgroundColor: 'gray'}}>
-                                Close
+                            <Button onClick={handleCloseModal}>
+                                Cancel
                             </Button>
                         </DialogActions>
-                    </div>
-                </Dialog>
+                    </Box>
                 )}
-            <ToastContainer autoClose={2000}/>
+            </Dialog>
+            <ToastContainer position="top-right" autoClose={3000} />
         </Box>
     );
 }
