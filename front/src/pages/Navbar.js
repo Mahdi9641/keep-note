@@ -192,7 +192,7 @@ const Layout = ({ children }) => {
                                                 padding: '12px 24px',
                                                 transition: 'all 0.2s ease',
                                                 '&:hover': {
-                                                    backgroundColor: '#f5f5f5',
+                                                    backgroundColor: '#d5cece',
                                                     cursor: 'pointer',
                                                     transform: 'translateX(5px)',
                                                 },
