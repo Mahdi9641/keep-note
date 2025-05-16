@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { Box, Container, Grid, Paper, Typography, useTheme } from '@mui/material';
+import React, {useState, useEffect} from 'react';
+import {Box, Container, Grid, Paper, Typography, useTheme} from '@mui/material';
 import {Note, Archive, Email, Approval, LooksRounded, AbcTwoTone} from '@mui/icons-material';
-import { useRouter } from 'next/router';
-import { motion } from 'framer-motion';
+import {useRouter} from 'next/router';
+import {motion} from 'framer-motion';
 import {getCurrentUser} from "../auth/provider/KeycloakProvider";
 import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
 
@@ -43,11 +43,11 @@ const Dashboard = () => {
         };
     };
 
-    const { hour, minute, second } = getClockHands();
+    const {hour, minute, second} = getClockHands();
 
     // Card variants for animation
     const containerVariants = {
-        hidden: { opacity: 0 },
+        hidden: {opacity: 0},
         visible: {
             opacity: 1,
             transition: {
@@ -57,16 +57,16 @@ const Dashboard = () => {
     };
 
     const cardVariants = {
-        hidden: { y: 50, opacity: 0 },
+        hidden: {y: 50, opacity: 0},
         visible: {
             y: 0,
             opacity: 1,
-            transition: { duration: 0.6, ease: "easeOut" }
+            transition: {duration: 0.6, ease: "easeOut"}
         }
     };
 
     // Create hour markers for clock
-    const hourMarkers = Array.from({ length: 12 }, (_, i) => {
+    const hourMarkers = Array.from({length: 12}, (_, i) => {
         const angle = (i * 30) * (Math.PI / 180);
         const x = 60 * Math.sin(angle);
         const y = -60 * Math.cos(angle);
@@ -92,11 +92,11 @@ const Dashboard = () => {
             background: 'linear-gradient(145deg, #f0f0f0, #dfe0e1)',
             minHeight: 'calc(100vh - 64px)'
         }}>
-            <Container maxWidth="lg" sx={{ textAlign: 'center', paddingTop: 3 }}>
+            <Container maxWidth="lg" sx={{textAlign: 'center', paddingTop: 3}}>
                 <motion.div
-                    initial={{ y: -20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ duration: 0.8 }}
+                    initial={{y: -20, opacity: 0}}
+                    animate={{y: 0, opacity: 1}}
+                    transition={{duration: 0.8}}
                 >
                     <Typography
                         sx={{
@@ -112,10 +112,10 @@ const Dashboard = () => {
                 </motion.div>
 
                 <motion.div
-                    initial={{ scale: 0.8, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ duration: 0.8, ease: "easeOut" }}
-                    style={{ display: 'flex', justifyContent: 'center', marginBottom: 5 }}
+                    initial={{scale: 0.8, opacity: 0}}
+                    animate={{scale: 1, opacity: 1}}
+                    transition={{duration: 0.8, ease: "easeOut"}}
+                    style={{display: 'flex', justifyContent: 'center', marginBottom: 5}}
                 >
                     <Paper
                         elevation={6}
@@ -166,7 +166,7 @@ const Dashboard = () => {
                             }}
                         />
                         <motion.div
-                            animate={{ rotate: second }}
+                            animate={{rotate: second}}
                             transition={{
                                 type: "tween",
                                 ease: "linear",
@@ -204,84 +204,84 @@ const Dashboard = () => {
                     initial="hidden"
                     animate="visible"
                 >
-                    <Grid container spacing={4} sx={{ marginTop: 1 }}>
+                    <Grid container spacing={4} sx={{marginTop: 1}}>
                         <Grid item xs={12} sm={6} md={4}>
                             {!isAdmin && (
-                            <motion.div variants={cardVariants}>
-                                <Paper
-                                    elevation={3}
-                                    sx={{
-                                        padding: 4,
-                                        textAlign: 'center',
-                                        cursor: 'pointer',
-                                        borderRadius: '16px',
-                                        height: '100%',
-                                        transition: 'all 0.3s ease',
-                                        '&:hover': {
-                                            transform: 'translateY(-8px) scale(1.02)',
-                                            boxShadow: '0 12px 20px rgba(0,0,0,0.2)',
-                                            background: 'linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%)',
-                                            '& .MuiSvgIcon-root': {
-                                                transform: 'scale(1.1) rotate(5deg)',
-                                                color: theme.palette.primary.dark
+                                <motion.div variants={cardVariants}>
+                                    <Paper
+                                        elevation={3}
+                                        sx={{
+                                            padding: 4,
+                                            textAlign: 'center',
+                                            cursor: 'pointer',
+                                            borderRadius: '16px',
+                                            height: '100%',
+                                            transition: 'all 0.3s ease',
+                                            '&:hover': {
+                                                transform: 'translateY(-8px) scale(1.02)',
+                                                boxShadow: '0 12px 20px rgba(0,0,0,0.2)',
+                                                background: 'linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%)',
+                                                '& .MuiSvgIcon-root': {
+                                                    transform: 'scale(1.1) rotate(5deg)',
+                                                    color: theme.palette.primary.dark
+                                                }
                                             }
-                                        }
-                                    }}
-                                    onClick={() => router.push('/Notes')}
-                                >
-                                    <Note sx={{
-                                        fontSize: 60,
-                                        color: theme.palette.primary.main,
-                                        marginBottom: 2,
-                                        transition: 'all 0.3s ease',
-                                        filter: 'drop-shadow(2px 4px 6px rgba(0,0,0,0.1))'
-                                    }} />
-                                    <Typography variant="h5" fontWeight="bold" gutterBottom>Notes</Typography>
-                                    <Typography variant="body1" color="text.secondary">
-                                        Write and save notes quickly for future reference.
-                                    </Typography>
-                                </Paper>
-                            </motion.div>
+                                        }}
+                                        onClick={() => router.push('/Notes')}
+                                    >
+                                        <Note sx={{
+                                            fontSize: 60,
+                                            color: theme.palette.primary.main,
+                                            marginBottom: 2,
+                                            transition: 'all 0.3s ease',
+                                            filter: 'drop-shadow(2px 4px 6px rgba(0,0,0,0.1))'
+                                        }}/>
+                                        <Typography variant="h5" fontWeight="bold" gutterBottom>Notes</Typography>
+                                        <Typography variant="body1" color="text.secondary">
+                                            Write and save notes quickly for future reference.
+                                        </Typography>
+                                    </Paper>
+                                </motion.div>
                             )}
                         </Grid>
 
                         <Grid item xs={12} sm={6} md={4}>
                             {!isAdmin && (
-                            <motion.div variants={cardVariants}>
-                                <Paper
-                                    elevation={3}
-                                    sx={{
-                                        padding: 4,
-                                        textAlign: 'center',
-                                        cursor: 'pointer',
-                                        borderRadius: '16px',
-                                        height: '100%',
-                                        transition: 'all 0.3s ease',
-                                        '&:hover': {
-                                            transform: 'translateY(-8px) scale(1.02)',
-                                            boxShadow: '0 12px 20px rgba(0,0,0,0.2)',
-                                            background: 'linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%)',
-                                            '& .MuiSvgIcon-root': {
-                                                transform: 'scale(1.1) rotate(5deg)',
-                                                color: theme.palette.secondary.dark
+                                <motion.div variants={cardVariants}>
+                                    <Paper
+                                        elevation={3}
+                                        sx={{
+                                            padding: 4,
+                                            textAlign: 'center',
+                                            cursor: 'pointer',
+                                            borderRadius: '16px',
+                                            height: '100%',
+                                            transition: 'all 0.3s ease',
+                                            '&:hover': {
+                                                transform: 'translateY(-8px) scale(1.02)',
+                                                boxShadow: '0 12px 20px rgba(0,0,0,0.2)',
+                                                background: 'linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%)',
+                                                '& .MuiSvgIcon-root': {
+                                                    transform: 'scale(1.1) rotate(5deg)',
+                                                    color: theme.palette.secondary.dark
+                                                }
                                             }
-                                        }
-                                    }}
-                                    onClick={() => router.push('/ArchivedNotes')}
-                                >
-                                    <Archive sx={{
-                                        fontSize: 60,
-                                        color: theme.palette.secondary.main,
-                                        marginBottom: 2,
-                                        transition: 'all 0.3s ease',
-                                        filter: 'drop-shadow(2px 4px 6px rgba(0,0,0,0.1))'
-                                    }} />
-                                    <Typography variant="h5" fontWeight="bold" gutterBottom>Archive</Typography>
-                                    <Typography variant="body1" color="text.secondary">
-                                        Store important notes in the archive for later access.
-                                    </Typography>
-                                </Paper>
-                            </motion.div>
+                                        }}
+                                        onClick={() => router.push('/ArchivedNotes')}
+                                    >
+                                        <Archive sx={{
+                                            fontSize: 60,
+                                            color: theme.palette.secondary.main,
+                                            marginBottom: 2,
+                                            transition: 'all 0.3s ease',
+                                            filter: 'drop-shadow(2px 4px 6px rgba(0,0,0,0.1))'
+                                        }}/>
+                                        <Typography variant="h5" fontWeight="bold" gutterBottom>Archive</Typography>
+                                        <Typography variant="body1" color="text.secondary">
+                                            Store important notes in the archive for later access.
+                                        </Typography>
+                                    </Paper>
+                                </motion.div>
                             )}
                             {isAdmin && (
                                 <motion.div variants={cardVariants}>
@@ -312,8 +312,9 @@ const Dashboard = () => {
                                             marginBottom: 2,
                                             transition: 'all 0.3s ease',
                                             filter: 'drop-shadow(2px 4px 6px rgba(0,0,0,0.1))'
-                                        }} />
-                                        <Typography variant="h5" fontWeight="bold" gutterBottom>admin Approval</Typography>
+                                        }}/>
+                                        <Typography variant="h5" fontWeight="bold" gutterBottom>admin
+                                            Approval</Typography>
                                         <Typography variant="body1" color="text.secondary">
                                             Approve page
                                         </Typography>
@@ -324,41 +325,42 @@ const Dashboard = () => {
 
                         <Grid item xs={12} sm={6} md={4}>
                             {!isAdmin && (
-                            <motion.div variants={cardVariants}>
-                                <Paper
-                                    elevation={3}
-                                    sx={{
-                                        padding: 4,
-                                        textAlign: 'center',
-                                        cursor: 'pointer',
-                                        borderRadius: '16px',
-                                        height: '100%',
-                                        transition: 'all 0.3s ease',
-                                        '&:hover': {
-                                            transform: 'translateY(-8px) scale(1.02)',
-                                            boxShadow: '0 12px 20px rgba(0,0,0,0.2)',
-                                            background: 'linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%)',
-                                            '& .MuiSvgIcon-root': {
-                                                transform: 'scale(1.1) rotate(5deg)',
-                                                color: theme.palette.error.dark
+                                <motion.div variants={cardVariants}>
+                                    <Paper
+                                        elevation={3}
+                                        sx={{
+                                            padding: 4,
+                                            textAlign: 'center',
+                                            cursor: 'pointer',
+                                            borderRadius: '16px',
+                                            height: '100%',
+                                            transition: 'all 0.3s ease',
+                                            '&:hover': {
+                                                transform: 'translateY(-8px) scale(1.02)',
+                                                boxShadow: '0 12px 20px rgba(0,0,0,0.2)',
+                                                background: 'linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%)',
+                                                '& .MuiSvgIcon-root': {
+                                                    transform: 'scale(1.1) rotate(5deg)',
+                                                    color: theme.palette.error.dark
+                                                }
                                             }
-                                        }
-                                    }}
-                                    onClick={() => router.push('/EmailRequest')}
-                                >
-                                    <Email sx={{
-                                        fontSize: 60,
-                                        color: theme.palette.error.main,
-                                        marginBottom: 2,
-                                        transition: 'all 0.3s ease',
-                                        filter: 'drop-shadow(2px 4px 6px rgba(0,0,0,0.1))'
-                                    }} />
-                                    <Typography variant="h5" fontWeight="bold" gutterBottom>Gmail Reminders</Typography>
-                                    <Typography variant="body1" color="text.secondary">
-                                        Receive reminders via Gmail to stay organized.
-                                    </Typography>
-                                </Paper>
-                            </motion.div>
+                                        }}
+                                        onClick={() => router.push('/EmailRequest')}
+                                    >
+                                        <Email sx={{
+                                            fontSize: 60,
+                                            color: theme.palette.error.main,
+                                            marginBottom: 2,
+                                            transition: 'all 0.3s ease',
+                                            filter: 'drop-shadow(2px 4px 6px rgba(0,0,0,0.1))'
+                                        }}/>
+                                        <Typography variant="h5" fontWeight="bold" gutterBottom>Gmail
+                                            Reminders</Typography>
+                                        <Typography variant="body1" color="text.secondary">
+                                            Receive reminders via Gmail to stay organized.
+                                        </Typography>
+                                    </Paper>
+                                </motion.div>
                             )}
                         </Grid>
                     </Grid>
