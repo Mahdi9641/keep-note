@@ -1,13 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Container, Grid, Paper, Typography, useTheme } from '@mui/material';
-import { Note, Archive, Email } from '@mui/icons-material';
+import {Note, Archive, Email, Approval, LooksRounded, AbcTwoTone} from '@mui/icons-material';
 import { useRouter } from 'next/router';
 import { motion } from 'framer-motion';
+import {getCurrentUser} from "../auth/provider/KeycloakProvider";
+import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
 
 const Dashboard = () => {
     const [time, setTime] = useState(new Date());
     const router = useRouter();
     const theme = useTheme();
+    const [userRoles, setUserRoles] = useState([]);
+    const user = getCurrentUser();
+
+    useEffect(() => {
+        if (user) {
+            setUserRoles(user.role || []);
+        }
+    }, [user]);
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -15,6 +25,8 @@ const Dashboard = () => {
         }, 1000);
         return () => clearInterval(timer);
     }, []);
+
+    const isAdmin = userRoles.includes('admin');
 
     const getClockHands = () => {
         const hours = time.getHours() % 12;
@@ -194,6 +206,7 @@ const Dashboard = () => {
                 >
                     <Grid container spacing={4} sx={{ marginTop: 1 }}>
                         <Grid item xs={12} sm={6} md={4}>
+                            {!isAdmin && (
                             <motion.div variants={cardVariants}>
                                 <Paper
                                     elevation={3}
@@ -229,9 +242,11 @@ const Dashboard = () => {
                                     </Typography>
                                 </Paper>
                             </motion.div>
+                            )}
                         </Grid>
 
                         <Grid item xs={12} sm={6} md={4}>
+                            {!isAdmin && (
                             <motion.div variants={cardVariants}>
                                 <Paper
                                     elevation={3}
@@ -267,9 +282,48 @@ const Dashboard = () => {
                                     </Typography>
                                 </Paper>
                             </motion.div>
+                            )}
+                            {isAdmin && (
+                                <motion.div variants={cardVariants}>
+                                    <Paper
+                                        elevation={3}
+                                        sx={{
+                                            padding: 4,
+                                            textAlign: 'center',
+                                            cursor: 'pointer',
+                                            borderRadius: '16px',
+                                            height: '100%',
+                                            transition: 'all 0.3s ease',
+                                            '&:hover': {
+                                                transform: 'translateY(-8px) scale(1.02)',
+                                                boxShadow: '0 12px 20px rgba(0,0,0,0.2)',
+                                                background: 'linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%)',
+                                                '& .MuiSvgIcon-root': {
+                                                    transform: 'scale(1.1) rotate(5deg)',
+                                                    color: theme.palette.success.light
+                                                }
+                                            }
+                                        }}
+                                        onClick={() => router.push('/AdminApproval')}
+                                    >
+                                        <VerifiedUserIcon sx={{
+                                            fontSize: 60,
+                                            color: theme.palette.success.light,
+                                            marginBottom: 2,
+                                            transition: 'all 0.3s ease',
+                                            filter: 'drop-shadow(2px 4px 6px rgba(0,0,0,0.1))'
+                                        }} />
+                                        <Typography variant="h5" fontWeight="bold" gutterBottom>admin Approval</Typography>
+                                        <Typography variant="body1" color="text.secondary">
+                                            Approve page
+                                        </Typography>
+                                    </Paper>
+                                </motion.div>
+                            )}
                         </Grid>
 
                         <Grid item xs={12} sm={6} md={4}>
+                            {!isAdmin && (
                             <motion.div variants={cardVariants}>
                                 <Paper
                                     elevation={3}
@@ -290,7 +344,7 @@ const Dashboard = () => {
                                             }
                                         }
                                     }}
-                                    onClick={() => router.push('/')}
+                                    onClick={() => router.push('/EmailRequest')}
                                 >
                                     <Email sx={{
                                         fontSize: 60,
@@ -305,6 +359,7 @@ const Dashboard = () => {
                                     </Typography>
                                 </Paper>
                             </motion.div>
+                            )}
                         </Grid>
                     </Grid>
                 </motion.div>
