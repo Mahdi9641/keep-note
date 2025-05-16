@@ -3,9 +3,9 @@
 import Keycloak from 'keycloak-js';
 
 const keycloakConfig = {
-    url: 'http://localhost:6060',
-    realm: 'fastApi',
-    clientId: 'dashboard',
+    url: 'http://localhost:6060', // URL Keycloak خود را جایگزین کنید
+    realm: 'note', // Realm Keycloak خود را جایگزین کنید
+    clientId: 'dashboard', // Client ID Keycloak خود را جایگزین کنید
 };
 
 let keycloak;
@@ -23,7 +23,7 @@ export const initKeycloak = () => {
         return keycloak
             .init({
                 onLoad: 'login-required',
-                redirectUri: window.location.ref ,
+                redirectUri: 'http://localhost:3000/', // این URI باید با تنظیمات Keycloak مطابقت داشته باشد
                 checkLoginIframe: false,
             })
             .then(authenticated => {

@@ -29,7 +29,7 @@ export const KeycloakProvider = ({ children }) => {
                         const tokenParsed = keycloak.tokenParsed || {};
                         console.log({tokenParsed})
                         const subPart = tokenParsed.sub.includes(':') ? tokenParsed.sub.split(':').pop() : tokenParsed.sub;
-                        const roles = tokenParsed?.resource_access?.['fastapi-app']?.roles?.includes('admin') ? 'admin' : null;
+                        const roles = tokenParsed?.resource_access?.['dashboard']?.roles?.includes('admin') ? 'admin' : null;
                         const userData = {
                             name: tokenParsed.preferred_username || 'Unknown User',
                             email: tokenParsed.email || 'No Email',

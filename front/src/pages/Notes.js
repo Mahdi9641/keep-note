@@ -43,7 +43,7 @@ export default function Notes() {
 
     const fetchNotes = async () => {
         const token = await getToken();
-        const res = await fetch('http://172.31.13.30:5000/api/notes', {
+        const res = await fetch('http://localhost:5000/api/notes', {
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${token}`,
@@ -69,7 +69,7 @@ export default function Notes() {
                 ...form,
                 reminder: form.reminder ? new Date(form.reminder).toISOString() : ''
             };
-            const res = await fetch('http://172.31.13.30:5000/api/notes', {
+            const res = await fetch('http://localhost:5000/api/notes', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -107,7 +107,7 @@ export default function Notes() {
     const deleteNote = async (id) => {
         try {
             const token = await getToken();
-            await fetch(`http://172.31.13.30:5000/api/notes/${id}`, {
+            await fetch(`http://localhost:5000/api/notes/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -137,7 +137,7 @@ export default function Notes() {
         try {
             updatedNote.reminder = updatedNote.reminder ? new Date(updatedNote.reminder).toISOString() : '';
             const token = await getToken();
-            await fetch(`http://172.31.13.30:5000/api/notes/${updatedNote.id}`, {
+            await fetch(`http://localhost:5000/api/notes/${updatedNote.id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

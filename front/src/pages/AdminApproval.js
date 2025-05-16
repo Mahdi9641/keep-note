@@ -23,7 +23,7 @@ export default function AdminApproval() {
     const fetchRequests = async () => {
         try {
             const token = await getToken();
-            const response = await fetch('http://172.31.13.30:5000/api/notes/proUser/false', {
+            const response = await fetch('http://localhost:5000/api/notes/proUser/false', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -41,7 +41,7 @@ export default function AdminApproval() {
     const handleVerify = async (id) => {
         try {
             const token = await getToken();
-            await fetch(`http://172.31.13.30:5000/api/notes/updateUserToPro/${id}`, {
+            await fetch(`http://localhost:5000/api/notes/updateUserToPro/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

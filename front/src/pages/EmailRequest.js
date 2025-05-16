@@ -25,7 +25,7 @@ export default function EmailRequest() {
     const fetchRequests = async () => {
         try {
             const token = await getToken();
-            const response = await fetch('http://172.31.13.30:5000/api/notes/getRequestsByUserId', {
+            const response = await fetch('http://localhost:5000/api/notes/getRequestsByUserId', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -45,7 +45,7 @@ export default function EmailRequest() {
             const amount = 1;
             const paymentStatus = true;
             const token = await getToken();
-            await fetch(`http://172.31.13.30:5000/api/notes/addRequest?amount=${amount}&paymentStatus=${paymentStatus}`, {
+            await fetch(`http://localhost:5000/api/notes/addRequest?amount=${amount}&paymentStatus=${paymentStatus}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

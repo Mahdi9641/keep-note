@@ -30,7 +30,7 @@ export default function NotificationBell() {
     const fetchNotes = async () => {
         try {
             const token = await getToken();
-            const response = await fetch("http://172.31.13.30:5000/api/notes/getNotesWithDueReminders", {
+            const response = await fetch("http://localhost:5000/api/notes/getNotesWithDueReminders", {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -99,7 +99,7 @@ export default function NotificationBell() {
         if (!selectedNote) return;
         try {
             const token = await getToken();
-            const response = await fetch("http://172.31.13.30:5000/api/notes/updateReadNotification", {
+            const response = await fetch("http://localhost:5000/api/notes/updateReadNotification", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

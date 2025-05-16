@@ -57,13 +57,13 @@ public class NoteController {
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(now);
-        calendar.add(Calendar.MINUTE, -5);
-        Date fiveMinuteBefore = calendar.getTime();
+        calendar.add(Calendar.MINUTE, 5);
+        Date fiveMinutesLater = calendar.getTime();
 
         String userId = authentication.getName();
         logger.info("User {} requested their notes", userId);
 
-        List<Note> notes = noteRepository.findByReminderAfterAndReadNotificationFalseAndUserId(fiveMinuteBefore, userId);
+        List<Note> notes = noteRepository.findByReminderBetweenAndReadNotificationFalseAndUserId(now, fiveMinutesLater, userId);
 
         return notes.stream().map(note -> {
             String reminderString = null;
